@@ -1,0 +1,45 @@
+@page "/customer/delete/{Id:int}"
+@using Demo.Data.Models;
+@inject CustomerService customerService;
+@inject NavigationManager NavigationManager;
+
+<div class="row justify-content-center align-items-center">
+    <div class="col">
+        <h3 class="fw-bold text-danger">Are you sure to delete customer?</h3>
+        <hr>
+        <div class="mt-3 ">
+            <p class="">Name: <span class="fw-bold">@customer.Name</span></p>
+            <p class="">Age: <span class="fw-bold">@customer.Age</span></p>
+        </div>
+    </div>
+</div>
+<hr>
+
+<div class="mt-4">
+    <button type="button" class="btn btn-danger" @onclick="OnConfirmBtnClicked">Confirm</button>
+    <a href="customer/index" class="btn btn-secondary">Cancel</a>
+</div>
+
+
+@code{
+    [Parameter]
+    public int Id { get; set; } = 0;
+    private String alert { get; set; } = "d-none";
+    Customer customer = new();
+
+    protected override void OnInitialized()
+    {
+        customer = customerService.GetCustomer(Id);
+
+        if(customer == null){
+            NavigationManager.NavigateTo("/404");
+        }
+    }
+    public void OnConfirmBtnClicked(){
+        customerService.DeleteCustomer(customer);
+        NavigationManager.NavigateTo("/customer/index");
+    }
+
+
+
+}
